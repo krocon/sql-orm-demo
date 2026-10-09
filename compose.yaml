@@ -1,0 +1,20 @@
+# Lokale Datenbank für alle Folgen:  docker compose up -d
+services:
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-shop}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Bitte .env aus .env.example anlegen}
+      POSTGRES_DB: shop
+    ports:
+      - "127.0.0.1:5433:5432"   # 5433: läuft parallel zu anderen Postgres-Containern
+    volumes:
+      - pgdata:/var/lib/postgresql
+      - ./docker/initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-shop} -d shop"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+volumes:
+  pgdata:

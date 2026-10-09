@@ -1,0 +1,11 @@
+# Folge 034: alles sichtbar machen (nur mit Profil "ep034" aktiv)
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.orm.jdbc.bind: trace       # Bind-Parameter (Hibernate 6/7)
+    org.hibernate.session.metrics: debug     # Hibernate 7.4: "Session Metrics" erst ab DEBUG
+spring:
+  jpa:
+    properties:
+      hibernate:
+        generate_statistics: true

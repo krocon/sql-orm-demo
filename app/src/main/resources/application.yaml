@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: shop
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/shop_app}
+    username: ${POSTGRES_USER:shop}
+    password: ${POSTGRES_PASSWORD:change-me}
+    hikari:
+      maximum-pool-size: 5       # Demo: viele Test-Kontexte teilen sich max_connections
+  jpa:
+    open-in-view: false          # Folge 035
+    hibernate:
+      ddl-auto: validate         # Folge 037: Flyway ist die Quelle der Wahrheit
+    properties:
+      hibernate:
+        generate_statistics: true   # Folgen 017, 034: Queries zählen
+logging:
+  level:
+    org.hibernate.SQL: debug        # Folge 034: erzeugtes SQL sehen

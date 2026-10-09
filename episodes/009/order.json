@@ -1,0 +1,7 @@
+{
+  "_id": 1001,
+  "customer": "ana@shop.de",
+  "items": [
+    { "sku": "MUG-1", "qty": 2 }
+  ]
+}

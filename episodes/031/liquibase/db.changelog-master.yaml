@@ -1,0 +1,65 @@
+# Folge 031: dieselben Änderungen wie V1/V2 (Flyway) als Liquibase-Changelog.
+# NUR Beispiel – nicht in die App eingebunden (die App nutzt Flyway).
+# Einbinden wäre: Dependency org.liquibase:liquibase-core +
+#   spring.liquibase.change-log: classpath:db/changelog/db.changelog-master.yaml
+databaseChangeLog:
+  - changeSet:
+      id: 1-create-orders
+      author: krocon
+      changes:
+        - createTable:
+            tableName: orders
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: customer_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: total
+                  type: numeric(10,2)
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamptz
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+      # createTable kann Liquibase selbst zurückrollen (dropTable)
+
+  - changeSet:
+      id: 2-add-order-status
+      author: krocon
+      changes:
+        - addColumn:
+            tableName: orders
+            columns:
+              - column:
+                  name: status
+                  type: varchar(20)
+        - update:
+            tableName: orders
+            columns:
+              - column:
+                  name: status
+                  value: NEW
+            where: status IS NULL
+        - addNotNullConstraint:
+            tableName: orders
+            columnName: status
+            columnDataType: varchar(20)
+      rollback:                       # explizit, weil "update" nicht automatisch umkehrbar ist
+        - dropColumn:
+            tableName: orders
+            columnName: status
+
+  # Liquibase merkt sich das in DATABASECHANGELOG (inkl. MD5-Checksumme je changeSet).
+  # Rollback z. B.: liquibase rollbackCount 1
